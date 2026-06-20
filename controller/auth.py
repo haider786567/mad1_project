@@ -1,24 +1,33 @@
-from flask import Blueprint, render_template, redirect, request, url_for ,flash , get_flashed_messages
+from flask import Blueprint, render_template, redirect, request, url_for ,flash 
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User,db
 from functools import wraps
-from flask_login import login_user, logout_user, current_user, login_required   
+from flask_login import login_user, logout_user, current_user, login_required  
+
 
 
 
 auth_bp = Blueprint('auth', __name__)
 
 
-@auth_bp.route('/dashboard')
-@login_required
-def index():
-    return render_template('user/dashboard.html')
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'admin':
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('auth.login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('auth.index'))
+        return redirect(url_for('user.dashboard'))
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -26,11 +35,11 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             if user.role == 'admin':
-                return redirect(url_for('/admin/dashboard.html'))
+                return redirect(url_for('admin.dashboard'))
             elif user.role == 'staff':
-                return redirect(url_for('/staff/dashboard.html'))
+                return redirect(url_for('staff.dashboard'))
             flash('Login successful!', 'success')
-            return redirect(url_for('auth.index'))
+            return redirect(url_for('user.dashboard'))
         else:
             flash('Invalid email or password. Please try again.', 'danger')
     return render_template('auth/login.html')
@@ -41,7 +50,7 @@ def login():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('auth.index'))
+        return redirect(url_for('user.dashboard'))
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
