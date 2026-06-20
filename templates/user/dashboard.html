@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard | TrekTrail{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    {% if current_user.is_authenticated %}
+    <section class="p-4 p-lg-5 mb-4 text-white rounded-4 shadow-sm"
+             style="background: linear-gradient(135deg, #12372a, #198754);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge rounded-pill text-bg-light text-success mb-3">{{ current_user.role|title }} account</span>
+                <h1 class="display-6 fw-bold">Welcome back, {{ current_user.name }}!</h1>
+                <p class="lead text-white-50 mb-0">Your next great trail is waiting. Explore treks, manage bookings, and get moving.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end d-none d-lg-block">
+                <i class="bi bi-mountains" style="font-size: 7rem; opacity: .25;"></i>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <article class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"><i class="bi bi-compass"></i></div>
+                    <h2 class="h5 fw-bold">Explore treks</h2>
+                    <p class="text-secondary mb-0">Find trails that match your location, schedule, and difficulty level.</p>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-4">
+            <article class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"><i class="bi bi-calendar2-check"></i></div>
+                    <h2 class="h5 fw-bold">Your bookings</h2>
+                    <p class="text-secondary mb-0">Keep track of upcoming adventures and booking information.</p>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-4">
+            <article class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"><i class="bi bi-person-check"></i></div>
+                    <h2 class="h5 fw-bold">Account status</h2>
+                    <p class="mb-2"><span class="badge text-bg-success">{{ current_user.status|title }}</span></p>
+                    <p class="text-secondary mb-0">Your account is ready for the trail.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+    {% else %}
+    <section class="text-center py-5 my-lg-5">
+        <div class="brand-mark mb-4"><i class="bi bi-mountains"></i></div>
+        <h1 class="display-5 fw-bold">Your next adventure starts here.</h1>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 650px;">Discover memorable treks, reserve your place, and manage every journey from one simple dashboard.</p>
+        <a class="btn btn-success btn-lg px-4 me-2" href="{{ url_for('auth.register') }}">Get started</a>
+        <a class="btn btn-outline-success btn-lg px-4" href="{{ url_for('auth.login') }}">Log in</a>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
