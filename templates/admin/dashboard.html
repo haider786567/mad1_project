@@ -10,14 +10,27 @@
             <h1 class="h2 fw-bold mb-1">Dashboard overview</h1>
             <p class="text-secondary mb-0">Manage your trekking platform from one place.</p>
         </div>
-        <a class="btn btn-success px-4" href="{{ url_for('admin.create_trek') }}"><i class="bi bi-plus-lg me-2"></i>Add trek</a>
+        <a class="btn btn-success px-4" href="{{ url_for('admin.create_trek') }}">
+            <i class="bi bi-plus-lg me-2"></i>Add trek
+        </a>
     </div>
 
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a class="btn btn-outline-success" href="{{ url_for('admin.trek_list') }}"><i class="bi bi-map me-2"></i>Treks</a>
-        <a class="btn btn-outline-success" href="{{ url_for('admin.staff_list') }}"><i class="bi bi-person-badge me-2"></i>Staff{% if pending_staff %} <span class="badge text-bg-warning ms-1">{{ pending_staff }}</span>{% endif %}</a>
-        <a class="btn btn-outline-success" href="{{ url_for('admin.user_list') }}"><i class="bi bi-people me-2"></i>Users</a>
-        <a class="btn btn-outline-success" href="{{ url_for('admin.bookings') }}"><i class="bi bi-calendar-check me-2"></i>Bookings</a>
+        <a class="btn btn-outline-success" href="{{ url_for('admin.trek_list') }}">
+            <i class="bi bi-map me-2"></i>Treks
+        </a>
+        <a class="btn btn-outline-success" href="{{ url_for('admin.staff_list') }}">
+            <i class="bi bi-person-badge me-2"></i>Staff
+            {% if pending_staff %}
+            <span class="badge text-bg-warning ms-1">{{ pending_staff }}</span>
+            {% endif %}
+        </a>
+        <a class="btn btn-outline-success" href="{{ url_for('admin.user_list') }}">
+            <i class="bi bi-people me-2"></i>Users
+        </a>
+        <a class="btn btn-outline-success" href="{{ url_for('admin.bookings') }}">
+            <i class="bi bi-calendar-check me-2"></i>Bookings
+        </a>
     </div>
 
     <div class="row g-4">
@@ -30,8 +43,13 @@
         <div class="col-sm-6 col-xl-3">
             <div class="card dashboard-card shadow-sm h-100">
                 <div class="card-body p-4 d-flex justify-content-between align-items-start">
-                    <div><p class="text-secondary mb-2">{{ title }}</p><p class="h3 fw-bold mb-0">{{ value }}</p></div>
-                    <div class="icon-box"><i class="bi bi-{{ icon }}"></i></div>
+                    <div>
+                        <p class="text-secondary mb-2">{{ title }}</p>
+                        <p class="h3 fw-bold mb-0">{{ value }}</p>
+                    </div>
+                    <div class="icon-box">
+                        <i class="bi bi-{{ icon }}"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,20 +58,65 @@
 
     <div class="row g-4 mt-1">
         <div class="col-lg-7">
-            <div class="card dashboard-card shadow-sm h-100"><div class="card-body p-4">
-                <div class="d-flex justify-content-between mb-3"><h2 class="h5 fw-bold mb-0">Recent bookings</h2><a href="{{ url_for('admin.bookings') }}">View all</a></div>
-                <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>User</th><th>Trek</th><th>Status</th></tr></thead><tbody>
-                {% for booking in recent_bookings %}<tr><td>{{ booking.user.name }}</td><td>{{ booking.trek.trek_name }}</td><td><span class="badge text-bg-success">{{ booking.status|title }}</span></td></tr>
-                {% else %}<tr><td colspan="3" class="text-secondary text-center py-4">No bookings yet.</td></tr>{% endfor %}
-                </tbody></table></div>
-            </div></div>
+            <div class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h2 class="h5 fw-bold mb-0">Recent bookings</h2>
+                        <a href="{{ url_for('admin.bookings') }}">View all</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Trek</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_bookings %}
+                                <tr>
+                                    <td>{{ booking.user.name }}</td>
+                                    <td>{{ booking.trek.trek_name }}</td>
+                                    <td>
+                                        <span class="badge text-bg-success">
+                                            {{ booking.status|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-secondary text-center py-4">
+                                        No bookings yet.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-5">
-            <div class="card dashboard-card shadow-sm h-100"><div class="card-body p-4">
-                <div class="d-flex justify-content-between mb-3"><h2 class="h5 fw-bold mb-0">Recent treks</h2><a href="{{ url_for('admin.trek_list') }}">Manage</a></div>
-                {% for trek in recent_treks %}<div class="d-flex justify-content-between align-items-center border-bottom py-3"><div><div class="fw-semibold">{{ trek.trek_name }}</div><small class="text-secondary">{{ trek.location }}</small></div><span class="badge text-bg-light">{{ trek.status|title }}</span></div>
-                {% else %}<p class="text-secondary text-center py-4">No treks created yet.</p>{% endfor %}
-            </div></div>
+            <div class="card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h2 class="h5 fw-bold mb-0">Recent treks</h2>
+                        <a href="{{ url_for('admin.trek_list') }}">Manage</a>
+                    </div>
+                    {% for trek in recent_treks %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+                        <div>
+                            <div class="fw-semibold">{{ trek.trek_name }}</div>
+                            <small class="text-secondary">{{ trek.location }}</small>
+                        </div>
+                        <span class="badge text-bg-light">{{ trek.status|title }}</span>
+                    </div>
+                    {% else %}
+                    <p class="text-secondary text-center py-4">No treks created yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

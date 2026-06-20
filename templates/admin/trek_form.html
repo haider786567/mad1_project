@@ -1,18 +1,133 @@
 {% extends "layout.html" %}
+
 {% block title %}{{ 'Edit' if trek else 'Create' }} Trek | TrekTrail{% endblock %}
+
 {% block content %}
-<div class="container py-5"><div class="row justify-content-center"><div class="col-xl-8"><div class="card dashboard-card shadow-sm"><div class="card-body p-4 p-lg-5">
-<h1 class="h3 fw-bold mb-4">{{ 'Edit trek' if trek else 'Create a new trek' }}</h1>
-<form method="post" class="row g-3">
-  <div class="col-md-8"><label class="form-label">Trek name</label><input class="form-control" name="trek_name" required value="{{ trek.trek_name if trek else '' }}"></div>
-  <div class="col-md-4"><label class="form-label">Location</label><input class="form-control" name="location" required value="{{ trek.location if trek else '' }}"></div>
-  <div class="col-md-4"><label class="form-label">Difficulty</label><select class="form-select" name="difficulty">{% for value in ['Easy','Moderate','Hard'] %}<option {% if trek and trek.difficulty == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></div>
-  <div class="col-md-4"><label class="form-label">Duration (days)</label><input class="form-control" type="number" min="1" name="duration" required value="{{ trek.duration if trek else '' }}"></div>
-  <div class="col-md-4"><label class="form-label">Available slots</label><input class="form-control" type="number" min="0" name="available_slots" required value="{{ trek.available_slots if trek else '' }}"></div>
-  <div class="col-md-6"><label class="form-label">Start date</label><input class="form-control" type="date" name="start_date" required value="{{ trek.start_date.isoformat() if trek else '' }}"></div>
-  <div class="col-md-6"><label class="form-label">End date</label><input class="form-control" type="date" name="end_date" required value="{{ trek.end_date.isoformat() if trek else '' }}"></div>
-  <div class="col-md-6"><label class="form-label">Status</label><select class="form-select" name="status">{% for value in ['pending','open','closed'] %}<option value="{{ value }}" {% if trek and trek.status|lower == value %}selected{% endif %}>{{ value|title }}</option>{% endfor %}</select></div>
-  <div class="col-12"><label class="form-label">Description</label><textarea class="form-control" rows="4" name="description">{{ trek.description if trek else '' }}</textarea></div>
-  <div class="col-12 d-flex gap-2 pt-2"><button class="btn btn-success px-4">{{ 'Save changes' if trek else 'Create trek' }}</button><a class="btn btn-outline-secondary" href="{{ url_for('admin.trek_list') }}">Cancel</a></div>
-</form></div></div></div></div></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card dashboard-card shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <h1 class="h3 fw-bold mb-4">
+                        {{ 'Edit trek' if trek else 'Create a new trek' }}
+                    </h1>
+
+                    <form method="post" class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Trek name</label>
+                            <input
+                                class="form-control"
+                                name="trek_name"
+                                required
+                                value="{{ trek.trek_name if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Location</label>
+                            <input
+                                class="form-control"
+                                name="location"
+                                required
+                                value="{{ trek.location if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Difficulty</label>
+                            <select class="form-select" name="difficulty">
+                                {% for value in ['Easy', 'Moderate', 'Hard'] %}
+                                <option
+                                    value="{{ value }}"
+                                    {% if trek and trek.difficulty == value %}selected{% endif %}
+                                >
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Duration (days)</label>
+                            <input
+                                class="form-control"
+                                type="number"
+                                min="1"
+                                name="duration"
+                                required
+                                value="{{ trek.duration if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Available slots</label>
+                            <input
+                                class="form-control"
+                                type="number"
+                                min="0"
+                                name="available_slots"
+                                required
+                                value="{{ trek.available_slots if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Start date</label>
+                            <input
+                                class="form-control"
+                                type="date"
+                                name="start_date"
+                                required
+                                value="{{ trek.start_date.isoformat() if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">End date</label>
+                            <input
+                                class="form-control"
+                                type="date"
+                                name="end_date"
+                                required
+                                value="{{ trek.end_date.isoformat() if trek else '' }}"
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                {% for value in ['pending', 'open', 'closed'] %}
+                                <option
+                                    value="{{ value }}"
+                                    {% if trek and trek.status|lower == value %}selected{% endif %}
+                                >
+                                    {{ value|title }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea
+                                class="form-control"
+                                rows="4"
+                                name="description"
+                            >{{ trek.description if trek else '' }}</textarea>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 pt-2">
+                            <button class="btn btn-success px-4">
+                                {{ 'Save changes' if trek else 'Create trek' }}
+                            </button>
+                            <a class="btn btn-outline-secondary" href="{{ url_for('admin.trek_list') }}">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

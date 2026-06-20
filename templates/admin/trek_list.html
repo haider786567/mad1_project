@@ -1,11 +1,102 @@
 {% extends "layout.html" %}
+
 {% block title %}Manage Treks | TrekTrail{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-  <div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h2 fw-bold mb-1">Treks</h1><p class="text-secondary mb-0">Create, assign and maintain every trek.</p></div><a href="{{ url_for('admin.create_trek') }}" class="btn btn-success"><i class="bi bi-plus-lg me-2"></i>New trek</a></div>
-  <div class="card dashboard-card shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-light"><tr><th class="ps-4">Trek</th><th>Dates</th><th>Difficulty</th><th>Slots</th><th>Staff</th><th>Status</th><th class="text-end pe-4">Actions</th></tr></thead><tbody>
-  {% for trek in treks %}<tr><td class="ps-4"><strong>{{ trek.trek_name }}</strong><br><small class="text-secondary"><i class="bi bi-geo-alt"></i> {{ trek.location }}</small></td><td>{{ trek.start_date.strftime('%d %b %Y') }}<br><small class="text-secondary">to {{ trek.end_date.strftime('%d %b %Y') }}</small></td><td>{{ trek.difficulty }}</td><td>{{ trek.available_slots }}</td><td><form action="{{ url_for('admin.assign_staff', trek_id=trek.id) }}" method="post" class="d-flex gap-2"><select name="staff_id" class="form-select form-select-sm"><option value="">Unassigned</option>{% for staff in staff_members %}<option value="{{ staff.id }}" {% if trek.assigned_staff_id == staff.id %}selected{% endif %}>{{ staff.name }}</option>{% endfor %}</select><button class="btn btn-sm btn-outline-success">Save</button></form></td><td><span class="badge text-bg-{{ 'success' if trek.status|lower == 'open' else 'secondary' }}">{{ trek.status|title }}</span></td><td class="text-end pe-4"><a href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}" class="btn btn-sm btn-outline-primary">Edit</a> <form action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete this trek?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr>
-  {% else %}<tr><td colspan="7" class="text-center text-secondary py-5">No treks found. Create your first trek.</td></tr>{% endfor %}
-  </tbody></table></div></div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold mb-1">Treks</h1>
+            <p class="text-secondary mb-0">Create, assign and maintain every trek.</p>
+        </div>
+        <a href="{{ url_for('admin.create_trek') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg me-2"></i>New trek
+        </a>
+    </div>
+
+    <div class="card dashboard-card shadow-sm">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Trek</th>
+                        <th>Dates</th>
+                        <th>Difficulty</th>
+                        <th>Slots</th>
+                        <th>Staff</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trek in treks %}
+                    <tr>
+                        <td class="ps-4">
+                            <strong>{{ trek.trek_name }}</strong><br>
+                            <small class="text-secondary">
+                                <i class="bi bi-geo-alt"></i> {{ trek.location }}
+                            </small>
+                        </td>
+                        <td>
+                            {{ trek.start_date.strftime('%d %b %Y') }}<br>
+                            <small class="text-secondary">
+                                to {{ trek.end_date.strftime('%d %b %Y') }}
+                            </small>
+                        </td>
+                        <td>{{ trek.difficulty }}</td>
+                        <td>{{ trek.available_slots }}</td>
+                        <td>
+                            <form
+                                action="{{ url_for('admin.assign_staff', trek_id=trek.id) }}"
+                                method="post"
+                                class="d-flex gap-2"
+                            >
+                                <select name="staff_id" class="form-select form-select-sm">
+                                    <option value="">Unassigned</option>
+                                    {% for staff in staff_members %}
+                                    <option
+                                        value="{{ staff.id }}"
+                                        {% if trek.assigned_staff_id == staff.id %}selected{% endif %}
+                                    >
+                                        {{ staff.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-sm btn-outline-success">Save</button>
+                            </form>
+                        </td>
+                        <td>
+                            <span class="badge text-bg-{{ 'success' if trek.status|lower == 'open' else 'secondary' }}">
+                                {{ trek.status|title }}
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a
+                                href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}"
+                                class="btn btn-sm btn-outline-primary"
+                            >
+                                Edit
+                            </a>
+                            <form
+                                action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}"
+                                method="post"
+                                class="d-inline"
+                                onsubmit="return confirm('Delete this trek?')"
+                            >
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary py-5">
+                            No treks found. Create your first trek.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

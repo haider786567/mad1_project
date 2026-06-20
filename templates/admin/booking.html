@@ -1,5 +1,50 @@
 {% extends "layout.html" %}
+
 {% block title %}Bookings | TrekTrail{% endblock %}
-{% block content %}<div class="container py-5"><h1 class="h2 fw-bold">Bookings</h1><p class="text-secondary mb-4">All reservations across the platform.</p><div class="card dashboard-card shadow-sm"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="table-light"><tr><th class="ps-4">ID</th><th>User</th><th>Trek</th><th>Booked on</th><th>Status</th></tr></thead><tbody>
-{% for booking in bookings %}<tr><td class="ps-4">#{{ booking.id }}</td><td><strong>{{ booking.user.name }}</strong><br><small class="text-secondary">{{ booking.user.email }}</small></td><td>{{ booking.trek.trek_name }}</td><td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td><td><span class="badge text-bg-success">{{ booking.status|title }}</span></td></tr>{% else %}<tr><td colspan="5" class="text-center text-secondary py-5">No bookings found.</td></tr>{% endfor %}
-</tbody></table></div></div></div>{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="h2 fw-bold">Bookings</h1>
+    <p class="text-secondary mb-4">All reservations across the platform.</p>
+
+    <div class="card dashboard-card shadow-sm">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>User</th>
+                        <th>Trek</th>
+                        <th>Booked on</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td class="ps-4">#{{ booking.id }}</td>
+                        <td>
+                            <strong>{{ booking.user.name }}</strong><br>
+                            <small class="text-secondary">{{ booking.user.email }}</small>
+                        </td>
+                        <td>{{ booking.trek.trek_name }}</td>
+                        <td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
+                        <td>
+                            <span class="badge text-bg-success">
+                                {{ booking.status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-secondary py-5">
+                            No bookings found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
