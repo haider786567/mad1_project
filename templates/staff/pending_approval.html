@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}Approval Pending | TrekTrail{% endblock %}
+{% block body_class %}auth-bg{% endblock %}
+{% block main_class %}d-flex align-items-center{% endblock %}
+
+{% block head %}
+<style>
+    .pending-card { max-width: 620px; border: 1px solid rgba(20, 108, 67, .1); border-radius: 1.75rem; }
+    .pending-icon {
+        width: 82px;
+        height: 82px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto;
+        border-radius: 50%;
+        color: #9a6700;
+        background: #fff3cd;
+        font-size: 2.25rem;
+        box-shadow: 0 0 0 10px rgba(255, 193, 7, .1);
+    }
+    .status-line { height: 3px; background: #dfe7e2; }
+    .status-line .progress-bar { background: linear-gradient(90deg, #198754, #ffc107); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center py-5">
+    <section class="card pending-card shadow-lg w-100">
+        <div class="card-body p-4 p-md-5 text-center">
+            <div class="pending-icon mb-4" aria-hidden="true"><i class="bi bi-hourglass-split"></i></div>
+            <span class="badge rounded-pill text-bg-warning mb-3 px-3 py-2">Application under review</span>
+            <h1 class="h2 fw-bold mb-3">You’re almost trail-ready, {{ current_user.name }}</h1>
+            <p class="text-secondary mx-auto mb-4" style="max-width: 480px;">
+                Your staff account has been submitted successfully. An administrator will review your details before activating your dashboard.
+            </p>
+
+            <div class="text-start bg-light rounded-4 p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-semibold"><i class="bi bi-check-circle-fill text-success me-2"></i>Application submitted</span>
+                    <small class="text-success fw-semibold">Complete</small>
+                </div>
+                <div class="progress status-line mb-3" role="progressbar" aria-label="Application progress" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: 50%"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold"><i class="bi bi-clock text-warning me-2"></i>Admin approval</span>
+                    <small class="text-secondary">Pending</small>
+                </div>
+            </div>
+
+            <p class="small text-secondary mb-4"><i class="bi bi-info-circle me-1"></i>Please check back later. Your dashboard will become available automatically after approval.</p>
+            <form method="post" action="{{ url_for('auth.logout') }}">
+                <button type="submit" class="btn btn-outline-success px-4">
+                    <i class="bi bi-box-arrow-right me-2"></i>Log out
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

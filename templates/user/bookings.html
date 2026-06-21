@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}My Bookings | TrekTrail{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4"><div><p class="text-success fw-semibold small mb-1">MY ADVENTURES</p><h1 class="h2 fw-bold mb-1">My bookings</h1><p class="text-secondary mb-0">Review and manage every reserved trek.</p></div><div class="d-flex gap-2"><a class="btn btn-outline-success" href="{{ url_for('user.booking_history') }}">Booking history</a><a class="btn btn-success" href="{{ url_for('user.dashboard') }}#available-treks">Find a trek</a></div></div>
+    <div class="row g-4">
+        {% for booking in bookings %}
+        <div class="col-md-6 col-xl-4"><article class="card dashboard-card shadow-sm h-100"><div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-3"><div class="icon-box"><i class="bi bi-mountains"></i></div><span class="badge {% if booking.status|lower == 'booked' %}text-bg-success{% elif booking.status|lower == 'completed' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">{{ booking.status|title }}</span></div>
+            <h2 class="h5 fw-bold mb-1">{{ booking.trek.trek_name }}</h2><p class="text-secondary mb-3"><i class="bi bi-geo-alt me-1"></i>{{ booking.trek.location }}</p>
+            <div class="bg-light rounded-3 p-3 small mb-4"><div class="d-flex justify-content-between mb-2"><span class="text-secondary">Trek date</span><strong>{{ booking.trek.start_date.strftime('%d %b %Y') }}</strong></div><div class="d-flex justify-content-between"><span class="text-secondary">Booked on</span><strong>{{ booking.booking_date.strftime('%d %b %Y') }}</strong></div></div>
+            <div class="d-flex gap-2 mt-auto"><a class="btn btn-outline-success flex-grow-1" href="{{ url_for('user.trek_details', trek_id=booking.trek.id) }}">View trek</a>{% if booking.status|lower == 'booked' %}<form method="post" action="{{ url_for('user.cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Cancel this booking?');"><button class="btn btn-outline-danger" type="submit">Cancel</button></form>{% endif %}</div>
+        </div></article></div>
+        {% else %}
+        <div class="col-12"><div class="card dashboard-card shadow-sm"><div class="card-body text-center p-5"><div class="icon-box mx-auto mb-3"><i class="bi bi-calendar2-plus"></i></div><h2 class="h5 fw-bold">No bookings yet</h2><p class="text-secondary mb-4">Choose an open trek and reserve your first adventure.</p><a class="btn btn-success" href="{{ url_for('user.dashboard') }}#available-treks">Explore treks</a></div></div></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

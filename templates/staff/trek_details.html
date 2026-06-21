@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ trek.trek_name }} | TrekTrail{% endblock %}
+
+{% block head %}
+<style>
+    .trek-banner { background: linear-gradient(135deg, #12372a, #198754); overflow: hidden; position: relative; }
+    .detail-tile { background: #f4f8f6; border-radius: 1rem; }
+    .participant-avatar { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--trek-light); color: var(--trek-green); font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% set status = trek.status|lower %}
+<div class="container py-4 py-lg-5">
+    <a class="link-secondary text-decoration-none d-inline-block mb-3" href="{{ url_for('staff.dashboard') }}">
+        <i class="bi bi-arrow-left me-1"></i>Back to dashboard
+    </a>
+
+    <section class="trek-banner rounded-4 shadow-sm p-4 p-lg-5 mb-4 text-white">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3">
+            <div>
+                <span class="badge rounded-pill bg-white text-success mb-3">{{ trek.difficulty|title }} trek</span>
+                <h1 class="display-6 fw-bold mb-2">{{ trek.trek_name }}</h1>
+                <p class="lead text-white-50 mb-0"><i class="bi bi-geo-alt me-1"></i>{{ trek.location }}</p>
+            </div>
+            <span class="badge rounded-pill fs-6 {% if status == 'open' %}text-bg-success{% elif status == 'pending' %}text-bg-warning{% elif status == 'completed' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+                {{ trek.status|title }}
+            </span>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card dashboard-card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-3">Trek overview</h2>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3"><div class="detail-tile p-3 h-100"><i class="bi bi-calendar-event text-success"></i><small class="text-secondary d-block mt-2">Starts</small><strong>{{ trek.start_date.strftime('%d %b %Y') }}</strong></div></div>
+                        <div class="col-6 col-md-3"><div class="detail-tile p-3 h-100"><i class="bi bi-calendar-check text-success"></i><small class="text-secondary d-block mt-2">Ends</small><strong>{{ trek.end_date.strftime('%d %b %Y') }}</strong></div></div>
+                        <div class="col-6 col-md-3"><div class="detail-tile p-3 h-100"><i class="bi bi-clock text-success"></i><small class="text-secondary d-block mt-2">Duration</small><strong>{{ trek.duration }} day{% if trek.duration != 1 %}s{% endif %}</strong></div></div>
+                        <div class="col-6 col-md-3"><div class="detail-tile p-3 h-100"><i class="bi bi-ticket-perforated text-success"></i><small class="text-secondary d-block mt-2">Available</small><strong>{{ trek.available_slots }} slots</strong></div></div>
+                    </div>
+                    {% if trek.description %}
+                    <hr class="my-4">
+                    <h3 class="h6 fw-bold">About this trek</h3>
+                    <p class="text-secondary mb-0">{{ trek.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card dashboard-card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div><h2 class="h5 fw-bold mb-1">Participants</h2><p class="text-secondary small mb-0">Currently booked for this trek</p></div>
+                        <a class="btn btn-sm btn-outline-success" href="{{ url_for('staff.trek_participants', trek_id=trek.id) }}">View all</a>
+                    </div>
+                    {% for booking in participants[:5] %}
+                    <div class="d-flex align-items-center gap-3 py-2 {% if not loop.last %}border-bottom{% endif %}">
+                        <div class="participant-avatar">{{ booking.user.name[:1]|upper }}</div>
+                        <div class="flex-grow-1"><strong>{{ booking.user.name }}</strong><small class="text-secondary d-block">{{ booking.user.email }}</small></div>
+                        <span class="badge text-bg-light">Booked</span>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-secondary py-4"><i class="bi bi-people fs-2 d-block mb-2"></i>No participants yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card dashboard-card shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-1">Manage trek</h2>
+                    <p class="text-secondary small mb-4">Update availability and progress.</p>
+                    <form method="post" action="{{ url_for('staff.update_trek_status', trek_id=trek.id) }}">
+                        <div class="mb-3">
+                            <label class="form-label" for="status">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="{{ status }}">{{ trek.status|title }} (current)</option>
+                                {% if status in ['pending', 'approved'] %}<option value="open">Open</option><option value="closed">Closed</option>{% endif %}
+                                {% if status == 'open' %}<option value="closed">Closed</option>{% endif %}
+                                {% if status == 'closed' %}<option value="open">Open</option><option value="completed">Completed</option>{% endif %}
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="available_slots">Available slots</label>
+                            <input class="form-control" id="available_slots" name="available_slots" type="number" min="0" value="{{ trek.available_slots }}" required>
+                        </div>
+                        <button class="btn btn-success w-100" type="submit"><i class="bi bi-check2-circle me-2"></i>Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

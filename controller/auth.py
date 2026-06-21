@@ -26,8 +26,6 @@ def admin_required(f):
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -37,7 +35,7 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
             elif user.role == 'staff':
-                return redirect(url_for('staff.dashboard'))
+                return redirect(url_for('staff.pending_approval'))
             flash('Login successful!', 'success')
             return redirect(url_for('user.dashboard'))
         else:
@@ -81,7 +79,7 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html')
 
-@auth_bp.route('/logout', methods=['POST'])
+@auth_bp.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
     logout_user()

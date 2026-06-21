@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}Staff Dashboard | TrekTrail{% endblock %}
+
+{% block head %}
+<style>
+    .staff-hero {
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, #12372a 0%, #146c43 58%, #2d8a5d 100%);
+    }
+
+    .staff-hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        right: -70px;
+        bottom: -150px;
+        border: 42px solid rgba(255, 255, 255, .08);
+        border-radius: 50%;
+    }
+
+    .stat-card { border: 1px solid rgba(20, 108, 67, .08); }
+    .trek-card { border: 1px solid rgba(20, 108, 67, .1); transition: transform .2s ease, box-shadow .2s ease; }
+    .trek-card:hover { transform: translateY(-3px); box-shadow: 0 1rem 2rem rgba(18, 55, 42, .1) !important; }
+    .trek-meta { background: #f4f8f6; border-radius: .9rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <section class="staff-hero rounded-4 shadow-sm p-4 p-lg-5 mb-4 text-white">
+        <div class="row align-items-center position-relative" style="z-index: 1;">
+            <div class="col-lg-8">
+                <span class="badge rounded-pill bg-white text-success mb-3 px-3 py-2">
+                    <i class="bi bi-patch-check-fill me-1"></i> Approved staff
+                </span>
+                <h1 class="display-6 fw-bold mb-2">Welcome, {{ current_user.name }}</h1>
+                <p class="lead text-white-50 mb-0">Your assigned trails, schedules, and trek groups are all in one place.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end d-none d-lg-block">
+                <i class="bi bi-signpost-split" style="font-size: 6.5rem; opacity: .25;"></i>
+            </div>
+        </div>
+    </section>
+
+    {% set total_participants = trek_data|sum(attribute='participants_count') %}
+    <div class="row g-3 g-lg-4 mb-5">
+        <div class="col-sm-6">
+            <div class="card dashboard-card stat-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <div class="icon-box flex-shrink-0"><i class="bi bi-map"></i></div>
+                    <div>
+                        <p class="text-secondary mb-1">Assigned treks</p>
+                        <p class="h3 fw-bold mb-0">{{ trek_data|length }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card dashboard-card stat-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <div class="icon-box flex-shrink-0"><i class="bi bi-people"></i></div>
+                    <div>
+                        <p class="text-secondary mb-1">Total participants</p>
+                        <p class="h3 fw-bold mb-0">{{ total_participants }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-3">
+        <div>
+            <p class="text-success fw-semibold small mb-1">YOUR SCHEDULE</p>
+            <h2 class="h3 fw-bold mb-0">Assigned treks</h2>
+        </div>
+        {% if trek_data %}
+        <span class="text-secondary small">{{ trek_data|length }} trek{% if trek_data|length != 1 %}s{% endif %} assigned</span>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        {% for item in trek_data %}
+        {% set trek = item.trek %}
+        <div class="col-md-6 col-xl-4">
+            <article class="card trek-card dashboard-card shadow-sm h-100">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <div class="icon-box"><i class="bi bi-mountains"></i></div>
+                        <span class="badge rounded-pill {% if trek.status|lower == 'open' %}text-bg-success{% elif trek.status|lower == 'pending' %}text-bg-warning{% elif trek.status|lower == 'completed' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">
+                            {{ trek.status|title }}
+                        </span>
+                    </div>
+
+                    <h3 class="h5 fw-bold mb-1">{{ trek.trek_name }}</h3>
+                    <p class="text-secondary mb-3"><i class="bi bi-geo-alt me-1"></i>{{ trek.location }}</p>
+
+                    <div class="trek-meta p-3 mb-3">
+                        <div class="row g-3 small">
+                            <div class="col-6">
+                                <span class="text-secondary d-block">Starts</span>
+                                <strong>{{ trek.start_date.strftime('%d %b %Y') }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-secondary d-block">Duration</span>
+                                <strong>{{ trek.duration }} day{% if trek.duration != 1 %}s{% endif %}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-secondary d-block">Difficulty</span>
+                                <strong>{{ trek.difficulty|title }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-secondary d-block">Participants</span>
+                                <strong>{{ item.participants_count }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if trek.description %}<p class="text-secondary small mb-3">{{ trek.description|truncate(110) }}</p>{% endif %}
+                    <div class="d-flex gap-2 mt-auto">
+                        <a class="btn btn-success flex-grow-1" href="{{ url_for('staff.trek_details', trek_id=trek.id) }}">
+                            View trek <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                        <a class="btn btn-outline-success" href="{{ url_for('staff.trek_participants', trek_id=trek.id) }}" aria-label="View participants">
+                            <i class="bi bi-people"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="card dashboard-card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <div class="icon-box mx-auto mb-3"><i class="bi bi-compass"></i></div>
+                    <h3 class="h5 fw-bold">No treks assigned yet</h3>
+                    <p class="text-secondary mb-0">Your assigned treks will appear here as soon as an administrator adds you to one.</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

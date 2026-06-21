@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Booking History | TrekTrail{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <a class="link-secondary text-decoration-none d-inline-block mb-3" href="{{ url_for('user.bookings') }}"><i class="bi bi-arrow-left me-1"></i>Back to bookings</a>
+    <div class="mb-4"><p class="text-success fw-semibold small mb-1">ACTIVITY LOG</p><h1 class="h2 fw-bold mb-1">Booking history</h1><p class="text-secondary mb-0">A complete record of your trek reservations.</p></div>
+    <div class="card dashboard-card shadow-sm overflow-hidden">
+        {% if bookings %}<div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th class="ps-4">Trek</th><th>Booked on</th><th>Trek date</th><th>Status</th><th class="text-end pe-4">Reference</th></tr></thead><tbody>
+        {% for booking in bookings %}<tr><td class="ps-4 py-3"><strong>{{ booking.trek.trek_name }}</strong><small class="text-secondary d-block"><i class="bi bi-geo-alt"></i> {{ booking.trek.location }}</small></td><td>{{ booking.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td><td>{{ booking.trek.start_date.strftime('%d %b %Y') }}</td><td><span class="badge {% if booking.status|lower == 'booked' %}text-bg-success{% elif booking.status|lower == 'completed' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">{{ booking.status|title }}</span></td><td class="text-end pe-4 text-secondary">#{{ booking.id }}</td></tr>{% endfor %}
+        </tbody></table></div>{% else %}<div class="card-body text-center p-5"><div class="icon-box mx-auto mb-3"><i class="bi bi-clock-history"></i></div><h2 class="h5 fw-bold">No history yet</h2><p class="text-secondary mb-0">Your booking activity will be recorded here.</p></div>{% endif %}
+    </div>
+</div>
+{% endblock %}

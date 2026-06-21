@@ -2,61 +2,94 @@
 
 {% block title %}Dashboard | TrekTrail{% endblock %}
 
+{% block head %}
+<style>
+    .user-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #12372a, #198754); }
+    .user-hero::after { content: ""; position: absolute; width: 260px; height: 260px; right: -75px; bottom: -170px; border: 42px solid rgba(255,255,255,.08); border-radius: 50%; }
+    .trek-card { border: 1px solid rgba(20,108,67,.1); transition: transform .2s ease, box-shadow .2s ease; }
+    .trek-card:hover { transform: translateY(-3px); box-shadow: 0 1rem 2rem rgba(18,55,42,.1) !important; }
+    .trek-meta { background: #f4f8f6; border-radius: .9rem; }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-4 py-lg-5">
-    {% if current_user.is_authenticated %}
-    <section class="p-4 p-lg-5 mb-4 text-white rounded-4 shadow-sm"
-             style="background: linear-gradient(135deg, #12372a, #198754);">
-        <div class="row align-items-center g-4">
+    <section class="user-hero p-4 p-lg-5 mb-4 text-white rounded-4 shadow-sm">
+        <div class="row align-items-center position-relative g-4" style="z-index:1;">
             <div class="col-lg-8">
-                <span class="badge rounded-pill text-bg-light text-success mb-3">{{ current_user.role|title }} account</span>
-                <h1 class="display-6 fw-bold">Welcome back, {{ current_user.name }}!</h1>
-                <p class="lead text-white-50 mb-0">Your next great trail is waiting. Explore treks, manage bookings, and get moving.</p>
+                <span class="badge rounded-pill bg-white text-success mb-3 px-3 py-2">Trail explorer</span>
+                <h1 class="display-6 fw-bold mb-2">Welcome back, {{ current_user.name }}</h1>
+                <p class="lead text-white-50 mb-4">Fresh air, big views, and your next memorable trail are waiting.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-light text-success" href="#available-treks"><i class="bi bi-compass me-2"></i>Explore treks</a>
+                    <a class="btn btn-outline-light" href="{{ url_for('user.bookings') }}">My bookings</a>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end d-none d-lg-block">
-                <i class="bi bi-mountains" style="font-size: 7rem; opacity: .25;"></i>
-            </div>
+            <div class="col-lg-4 text-lg-end d-none d-lg-block"><i class="bi bi-mountains" style="font-size:7rem;opacity:.25;"></i></div>
         </div>
     </section>
 
-    <div class="row g-4">
-        <div class="col-md-4">
-            <article class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="icon-box mb-3"><i class="bi bi-compass"></i></div>
-                    <h2 class="h5 fw-bold">Explore treks</h2>
-                    <p class="text-secondary mb-0">Find trails that match your location, schedule, and difficulty level.</p>
-                </div>
-            </article>
+    <div class="row g-3 g-lg-4 mb-5">
+        <div class="col-sm-6 col-lg-4">
+            <div class="card dashboard-card shadow-sm h-100"><div class="card-body p-4 d-flex align-items-center gap-3"><div class="icon-box"><i class="bi bi-map"></i></div><div><p class="text-secondary mb-1">Available treks</p><p class="h3 fw-bold mb-0">{{ treks|length }}</p></div></div></div>
         </div>
-        <div class="col-md-4">
-            <article class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="icon-box mb-3"><i class="bi bi-calendar2-check"></i></div>
-                    <h2 class="h5 fw-bold">Your bookings</h2>
-                    <p class="text-secondary mb-0">Keep track of upcoming adventures and booking information.</p>
-                </div>
-            </article>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card dashboard-card shadow-sm h-100"><div class="card-body p-4 d-flex align-items-center gap-3"><div class="icon-box"><i class="bi bi-calendar2-check"></i></div><div><p class="text-secondary mb-1">Active bookings</p><p class="h3 fw-bold mb-0">{{ Booked_treks|length }}</p></div></div></div>
         </div>
-        <div class="col-md-4">
-            <article class="card dashboard-card shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="icon-box mb-3"><i class="bi bi-person-check"></i></div>
-                    <h2 class="h5 fw-bold">Account status</h2>
-                    <p class="mb-2"><span class="badge text-bg-success">{{ current_user.status|title }}</span></p>
-                    <p class="text-secondary mb-0">Your account is ready for the trail.</p>
-                </div>
-            </article>
+        <div class="col-lg-4">
+            <div class="card dashboard-card shadow-sm h-100"><div class="card-body p-4 d-flex align-items-center gap-3"><div class="icon-box"><i class="bi bi-person-circle"></i></div><div><p class="text-secondary mb-1">Account</p><a class="link-success fw-semibold text-decoration-none" href="{{ url_for('user.profile') }}">Manage profile <i class="bi bi-arrow-right"></i></a></div></div></div>
         </div>
     </div>
-    {% else %}
-    <section class="text-center py-5 my-lg-5">
-        <div class="brand-mark mb-4"><i class="bi bi-mountains"></i></div>
-        <h1 class="display-5 fw-bold">Your next adventure starts here.</h1>
-        <p class="lead text-secondary mx-auto mb-4" style="max-width: 650px;">Discover memorable treks, reserve your place, and manage every journey from one simple dashboard.</p>
-        <a class="btn btn-success btn-lg px-4 me-2" href="{{ url_for('auth.register') }}">Get started</a>
-        <a class="btn btn-outline-success btn-lg px-4" href="{{ url_for('auth.login') }}">Log in</a>
+
+    <section id="available-treks" class="mb-5">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-3">
+            <div><p class="text-success fw-semibold small mb-1">DISCOVER</p><h2 class="h3 fw-bold mb-0">Available treks</h2></div>
+            <span class="text-secondary small">{{ treks|length }} trail{% if treks|length != 1 %}s{% endif %} ready to book</span>
+        </div>
+        <div class="row g-4">
+            {% for trek in treks %}
+            <div class="col-md-6 col-xl-4">
+                <article class="card trek-card dashboard-card shadow-sm h-100">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3"><div class="icon-box"><i class="bi bi-signpost-split"></i></div><span class="badge rounded-pill text-bg-success">Open</span></div>
+                        <h3 class="h5 fw-bold mb-1">{{ trek.trek_name }}</h3>
+                        <p class="text-secondary mb-3"><i class="bi bi-geo-alt me-1"></i>{{ trek.location }}</p>
+                        <div class="trek-meta p-3 mb-3"><div class="row g-3 small">
+                            <div class="col-6"><span class="text-secondary d-block">Starts</span><strong>{{ trek.start_date.strftime('%d %b %Y') }}</strong></div>
+                            <div class="col-6"><span class="text-secondary d-block">Duration</span><strong>{{ trek.duration }} day{% if trek.duration != 1 %}s{% endif %}</strong></div>
+                            <div class="col-6"><span class="text-secondary d-block">Difficulty</span><strong>{{ trek.difficulty|title }}</strong></div>
+                            <div class="col-6"><span class="text-secondary d-block">Slots left</span><strong>{{ trek.available_slots }}</strong></div>
+                        </div></div>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a class="btn btn-outline-success flex-grow-1" href="{{ url_for('user.trek_details', trek_id=trek.id) }}">View details</a>
+                            {% if trek.id in trek_status %}
+                            <button class="btn btn-success" disabled><i class="bi bi-check2 me-1"></i>Booked</button>
+                            {% else %}
+                            <form method="post" action="{{ url_for('user.book_trek', trek_id=trek.id) }}"><button class="btn btn-success" type="submit">Book now</button></form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% else %}
+            <div class="col-12"><div class="card dashboard-card shadow-sm"><div class="card-body text-center p-5"><div class="icon-box mx-auto mb-3"><i class="bi bi-compass"></i></div><h3 class="h5 fw-bold">No open treks right now</h3><p class="text-secondary mb-0">New trails will appear here as soon as they become available.</p></div></div></div>
+            {% endfor %}
+        </div>
     </section>
-    {% endif %}
+
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-3"><div><p class="text-success fw-semibold small mb-1">ACTIVITY</p><h2 class="h3 fw-bold mb-0">Recent bookings</h2></div><a class="btn btn-sm btn-outline-success" href="{{ url_for('user.bookings') }}">View all</a></div>
+        <div class="card dashboard-card shadow-sm overflow-hidden">
+            {% for booking in recent_bookings %}
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3 p-3 p-md-4 {% if not loop.last %}border-bottom{% endif %}">
+                <div class="icon-box flex-shrink-0"><i class="bi bi-calendar-check"></i></div>
+                <div class="flex-grow-1"><strong>{{ booking.trek.trek_name }}</strong><small class="text-secondary d-block">{{ booking.booking_date.strftime('%d %b %Y') }} · {{ booking.trek.location }}</small></div>
+                <span class="badge {% if booking.status|lower == 'booked' %}text-bg-success{% elif booking.status|lower == 'completed' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">{{ booking.status|title }}</span>
+            </div>
+            {% else %}
+            <div class="text-center text-secondary p-5">You have no booking activity yet.</div>
+            {% endfor %}
+        </div>
+    </section>
 </div>
 {% endblock %}
