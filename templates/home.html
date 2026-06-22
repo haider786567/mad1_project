@@ -1,0 +1,255 @@
+{% extends "layout.html" %}
+
+{% block title %}TrekTrail | Explore Beyond{% endblock %}
+{% block body_class %}bg-white{% endblock %}
+{% block main_class %}p-0{% endblock %}
+
+{% block content %}
+{% if not current_user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="{{ url_for('home') }}">
+            <i class="bi bi-mountains text-success me-2"></i>TrekTrail
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav"
+                aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="landingNav">
+            <ul class="navbar-nav mx-auto py-3 py-lg-0">
+                <li class="nav-item"><a class="nav-link px-lg-3" href="#treks">Popular treks</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3" href="#experience">Why us</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3" href="#journey">How it works</a></li>
+            </ul>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light px-4" href="{{ url_for('auth.login') }}">Log in</a>
+                <a class="btn btn-success px-4" href="{{ url_for('auth.register') }}">Get started</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<header class="bg-dark text-white py-5">
+    <div class="container py-lg-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 py-4">
+                <div class="d-inline-flex align-items-center bg-success bg-opacity-25 border border-success rounded-pill px-3 py-2 mb-4">
+                    <i class="bi bi-compass text-success me-2"></i>
+                    <span class="small fw-semibold">Discover trails. Collect stories.</span>
+                </div>
+                <h1 class="display-2 fw-bold lh-1 mb-4">The mountains are calling.</h1>
+                <p class="lead text-white-50 mb-4">Explore remarkable trails, meet passionate trekkers, and book your next outdoor escape in a few simple clicks.</p>
+                <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
+                    <a class="btn btn-success btn-lg px-4 py-3" href="{{ url_for('auth.register') }}">
+                        Find your trek <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a class="btn btn-outline-light btn-lg px-4 py-3" href="#treks">Explore destinations</a>
+                </div>
+                <div class="d-flex flex-wrap gap-4 text-white-50 small">
+                    <span><i class="bi bi-check-circle-fill text-success me-2"></i>Verified guides</span>
+                    <span><i class="bi bi-check-circle-fill text-success me-2"></i>Easy booking</span>
+                    <span><i class="bi bi-check-circle-fill text-success me-2"></i>Curated trails</span>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img class="img-fluid rounded-4 shadow-lg"
+                         src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85"
+                         alt="Trekkers exploring a mountain range">
+                    <div class="position-absolute bottom-0 start-0 m-3 m-md-4 bg-white text-dark rounded-3 shadow p-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-success-subtle text-success rounded-circle p-3"><i class="bi bi-geo-alt-fill fs-5"></i></div>
+                            <div>
+                                <small class="text-secondary d-block">Featured adventure</small>
+                                <span class="fw-bold">Himalayan Explorer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="border-bottom bg-light">
+    <div class="container py-4">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3"><div class="h3 fw-bold mb-1">50+</div><small class="text-secondary">Unique trails</small></div>
+            <div class="col-6 col-md-3"><div class="h3 fw-bold mb-1">2,000+</div><small class="text-secondary">Happy trekkers</small></div>
+            <div class="col-6 col-md-3"><div class="h3 fw-bold mb-1">30+</div><small class="text-secondary">Expert guides</small></div>
+            <div class="col-6 col-md-3"><div class="h3 fw-bold mb-1">4.9 <i class="bi bi-star-fill text-warning fs-5"></i></div><small class="text-secondary">Average rating</small></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" id="treks">
+    <div class="container py-lg-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+            <div>
+                <span class="badge text-bg-success mb-3">TRENDING NOW</span>
+                <h2 class="display-5 fw-bold mb-2">Treks worth taking</h2>
+                <p class="text-secondary mb-0">A little inspiration for your next great escape.</p>
+            </div>
+            <a class="btn btn-outline-success align-self-start align-self-md-end" href="{{ url_for('auth.register') }}">View all treks <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80" class="card-img-top" alt="Green valley trek">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge text-bg-success">Beginner</span>
+                            <span class="small text-secondary"><i class="bi bi-clock me-1"></i>3 days</span>
+                        </div>
+                        <h3 class="h4 fw-bold">Valley of Flowers</h3>
+                        <p class="text-secondary"><i class="bi bi-geo-alt me-1"></i>Uttarakhand, India</p>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                            <span class="fw-semibold"><i class="bi bi-activity text-success me-1"></i>3,600 m</span>
+                            <span class="text-warning"><i class="bi bi-star-fill"></i> 4.8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1486911278844-a81c5267e227?auto=format&fit=crop&w=900&q=80" class="card-img-top" alt="Snowy Himalayan mountain trek">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge text-bg-warning">Moderate</span>
+                            <span class="small text-secondary"><i class="bi bi-clock me-1"></i>6 days</span>
+                        </div>
+                        <h3 class="h4 fw-bold">Hampta Pass</h3>
+                        <p class="text-secondary"><i class="bi bi-geo-alt me-1"></i>Himachal Pradesh, India</p>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                            <span class="fw-semibold"><i class="bi bi-activity text-success me-1"></i>4,270 m</span>
+                            <span class="text-warning"><i class="bi bi-star-fill"></i> 4.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&w=900&q=80" class="card-img-top" alt="High altitude mountain trail">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge text-bg-danger">Challenging</span>
+                            <span class="small text-secondary"><i class="bi bi-clock me-1"></i>8 days</span>
+                        </div>
+                        <h3 class="h4 fw-bold">Kashmir Great Lakes</h3>
+                        <p class="text-secondary"><i class="bi bi-geo-alt me-1"></i>Kashmir, India</p>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                            <span class="fw-semibold"><i class="bi bi-activity text-success me-1"></i>4,190 m</span>
+                            <span class="text-warning"><i class="bi bi-star-fill"></i> 4.9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5" id="experience">
+    <div class="container py-lg-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1000&q=85"
+                     class="img-fluid rounded-4 shadow" alt="Hikers walking together on a trail">
+            </div>
+            <div class="col-lg-7 ps-lg-5">
+                <span class="badge text-bg-success mb-3">THE TREKTRAIL EXPERIENCE</span>
+                <h2 class="display-5 fw-bold mb-4">More confidence on every climb.</h2>
+                <div class="row g-4">
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-3">
+                            <div class="text-success fs-3"><i class="bi bi-shield-check"></i></div>
+                            <div><h3 class="h5 fw-bold">Trusted leaders</h3><p class="text-secondary mb-0">Approved guides who know the trail and put safety first.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-3">
+                            <div class="text-success fs-3"><i class="bi bi-map"></i></div>
+                            <div><h3 class="h5 fw-bold">Curated routes</h3><p class="text-secondary mb-0">Carefully selected journeys for every experience level.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-3">
+                            <div class="text-success fs-3"><i class="bi bi-calendar2-check"></i></div>
+                            <div><h3 class="h5 fw-bold">Simple booking</h3><p class="text-secondary mb-0">Choose, reserve, and manage your adventures with ease.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-3">
+                            <div class="text-success fs-3"><i class="bi bi-people"></i></div>
+                            <div><h3 class="h5 fw-bold">Real community</h3><p class="text-secondary mb-0">Share the journey with people who love the outdoors.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" id="journey">
+    <div class="container py-lg-5">
+        <div class="text-center mb-5">
+            <span class="badge text-bg-success mb-3">YOUR JOURNEY</span>
+            <h2 class="display-5 fw-bold">From screen to summit</h2>
+            <p class="text-secondary">Getting outside should never feel complicated.</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="bg-success-subtle text-success rounded-circle d-inline-flex p-4 mb-3"><i class="bi bi-person-plus fs-2"></i></div>
+                <h3 class="h5 fw-bold">1. Create an account</h3>
+                <p class="text-secondary">Join the TrekTrail community in just a minute.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success-subtle text-success rounded-circle d-inline-flex p-4 mb-3"><i class="bi bi-search fs-2"></i></div>
+                <h3 class="h5 fw-bold">2. Find your trail</h3>
+                <p class="text-secondary">Pick an adventure that matches your energy.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success-subtle text-success rounded-circle d-inline-flex p-4 mb-3"><i class="bi bi-backpack fs-2"></i></div>
+                <h3 class="h5 fw-bold">3. Pack and go</h3>
+                <p class="text-secondary">Book your place and get ready to make memories.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pb-5">
+    <div class="container pb-lg-5">
+        <div class="bg-success text-white rounded-4 p-4 p-md-5 shadow">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h2 class="display-6 fw-bold mb-2">Ready for a breath of fresh air?</h2>
+                    <p class="fs-5 mb-0 opacity-75">Your next unforgettable trail is only a booking away.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="btn btn-light btn-lg text-success fw-bold px-4 py-3" href="{{ url_for('auth.register') }}">
+                        Start exploring <i class="bi bi-arrow-up-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-dark text-white-50 py-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-md-6 text-center text-md-start">
+                <a class="text-white text-decoration-none fw-bold fs-5" href="{{ url_for('home') }}">
+                    <i class="bi bi-mountains text-success me-2"></i>TrekTrail
+                </a>
+                <p class="small mt-2 mb-0">Go farther. Feel more. Leave only footprints.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a class="text-white-50 text-decoration-none me-3" href="{{ url_for('auth.login') }}">Log in</a>
+                <a class="text-white-50 text-decoration-none" href="{{ url_for('auth.register') }}">Register</a>
+                <p class="small mt-2 mb-0">&copy; 2026 TrekTrail</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
