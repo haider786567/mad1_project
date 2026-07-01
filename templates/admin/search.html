@@ -1,0 +1,176 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Search | TrekTrail{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+	<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+		<div>
+			<p class="text-success fw-semibold mb-1">ADMIN PANEL</p>
+			<h1 class="h2 fw-bold mb-1">Search records</h1>
+			<p class="text-secondary mb-0">Find treks, staff and users by name or ID.</p>
+		</div>
+		<div class="d-flex flex-wrap gap-2">
+			<a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+				<i class="bi bi-speedometer2 me-2"></i>Dashboard
+			</a>
+			<a href="{{ url_for('admin.trek_list') }}" class="btn btn-outline-success">
+				<i class="bi bi-map me-2"></i>Treks
+			</a>
+		</div>
+	</div>
+
+	<div class="card dashboard-card shadow-sm border-0 mb-4">
+		<div class="card-body p-4 p-lg-5">
+			<form method="get" action="{{ url_for('admin.search') }}" class="row g-3 align-items-end">
+				<div class="col-lg-6">
+					<label for="q" class="form-label fw-semibold">Search term</label>
+					<input
+						type="text"
+						class="form-control"
+						id="q"
+						name="q"
+						value="{{ query }}"
+						placeholder="Search by ID, name, email, or location"
+					>
+				</div>
+				<div class="col-lg-3">
+					<label for="category" class="form-label fw-semibold">Category</label>
+					<select class="form-select" id="category" name="category">
+						<option value="all" {% if category == 'all' %}selected{% endif %}>All results</option>
+						<option value="treks" {% if category == 'treks' %}selected{% endif %}>Treks</option>
+						<option value="staff" {% if category == 'staff' %}selected{% endif %}>Staff</option>
+						<option value="users" {% if category == 'users' %}selected{% endif %}>Users</option>
+					</select>
+				</div>
+				<div class="col-lg-3 d-grid d-lg-flex gap-2">
+					<button type="submit" class="btn btn-success flex-grow-1">
+						<i class="bi bi-search me-2"></i>Search
+					</button>
+					{% if query %}
+					<a href="{{ url_for('admin.search') }}" class="btn btn-outline-secondary">Clear</a>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+
+	{% if query %}
+	<div class="mb-4">
+		<span class="badge text-bg-success-subtle text-success border border-success-subtle px-3 py-2">
+			Results for "{{ query }}"
+		</span>
+		<span class="badge text-bg-light border px-3 py-2 ms-2">
+			Category: {{ category|title }}
+		</span>
+	</div>
+	{% endif %}
+
+	<div class="row g-4">
+		<div class="col-12">
+			<div class="card dashboard-card shadow-sm h-100">
+				<div class="card-body p-4">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h2 class="h5 fw-bold mb-0">Treks</h2>
+						<span class="badge text-bg-light">{{ treks|length }} found</span>
+					</div>
+					<div class="table-responsive">
+						<table class="table align-middle mb-0">
+							<thead class="table-light">
+								<tr>
+									<th class="ps-3">Trek</th>
+									<th>Location</th>
+									<th>Dates</th>
+									<th>Status</th>
+									<th class="text-end pe-3">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for trek in treks %}
+								<tr>
+									<td class="ps-3">
+										<div class="fw-semibold">{{ trek.trek_name }}</div>
+										<small class="text-secondary">ID: {{ trek.id }}</small>
+									</td>
+									<td>{{ trek.location }}</td>
+									<td>
+										{{ trek.start_date.strftime('%d %b %Y') }}<br>
+										<small class="text-secondary">to {{ trek.end_date.strftime('%d %b %Y') }}</small>
+									</td>
+									<td>
+										<span class="badge text-bg-{{ 'success' if trek.status|lower == 'open' else 'secondary' }}">
+											{{ trek.status|title }}
+										</span>
+									</td>
+									<td class="text-end pe-3">
+										<a href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}" class="btn btn-sm btn-outline-primary">
+											Edit
+										</a>
+									</td>
+								</tr>
+								{% else %}
+								<tr>
+									<td colspan="5" class="text-center text-secondary py-4">
+										No treks matched your search.
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card dashboard-card shadow-sm h-100">
+				<div class="card-body p-4">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h2 class="h5 fw-bold mb-0">Staff</h2>
+						<span class="badge text-bg-light">{{ staff_members|length }} found</span>
+					</div>
+					{% for staff in staff_members %}
+					<div class="border-bottom py-3 d-flex justify-content-between align-items-start gap-3">
+						<div>
+							<div class="fw-semibold">{{ staff.name }}</div>
+							<small class="text-secondary">ID: {{ staff.id }}</small><br>
+							<small class="text-secondary">{{ staff.email }}</small>
+						</div>
+						<span class="badge text-bg-{{ 'success' if staff.status == 'approved' else 'warning' if staff.status == 'pending' else 'danger' }}">
+							{{ staff.status|title }}
+						</span>
+					</div>
+					{% else %}
+					<p class="text-secondary mb-0 py-4 text-center">No staff matched your search.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card dashboard-card shadow-sm h-100">
+				<div class="card-body p-4">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h2 class="h5 fw-bold mb-0">Users</h2>
+						<span class="badge text-bg-light">{{ users|length }} found</span>
+					</div>
+					{% for user in users %}
+					<div class="border-bottom py-3 d-flex justify-content-between align-items-start gap-3">
+						<div>
+							<div class="fw-semibold">{{ user.name }}</div>
+							<small class="text-secondary">ID: {{ user.id }}</small><br>
+							<small class="text-secondary">{{ user.email }}</small>
+						</div>
+						<span class="badge text-bg-{{ 'success' if user.status == 'approved' else 'warning' if user.status == 'pending' else 'danger' }}">
+							{{ user.status|title }}
+						</span>
+					</div>
+					{% else %}
+					<p class="text-secondary mb-0 py-4 text-center">No users matched your search.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

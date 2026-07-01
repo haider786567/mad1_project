@@ -15,6 +15,37 @@
         </a>
     </div>
 
+    <div class="card dashboard-card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <form method="get" action="{{ url_for('admin.search') }}" class="row g-3 align-items-end">
+                <div class="col-lg-7">
+                    <label for="dashboard-search" class="form-label fw-semibold mb-1">Quick search</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="dashboard-search"
+                        name="q"
+                        placeholder="Search treks, staff, or users"
+                    >
+                </div>
+                <div class="col-lg-3">
+                    <label for="dashboard-category" class="form-label fw-semibold mb-1">Category</label>
+                    <select class="form-select" id="dashboard-category" name="category">
+                        <option value="all" selected>All results</option>
+                        <option value="treks">Treks</option>
+                        <option value="staff">Staff</option>
+                        <option value="users">Users</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 d-grid">
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="bi bi-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="d-flex flex-wrap gap-2 mb-4">
         <a class="btn btn-outline-success" href="{{ url_for('admin.trek_list') }}">
             <i class="bi bi-map me-2"></i>Treks

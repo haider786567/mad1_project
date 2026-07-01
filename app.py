@@ -26,11 +26,11 @@ with app.app_context():
             )
             db.session.add(admin)
             db.session.commit()
-            print("✅ Admin user created with email: admin@example.com")
-        print("✅ Database Connection Successful")
+            print("Admin user created with email: admin@example.com")
+        print(" Database Connection Successful")
     except Exception as e:
-        print("❌ Database Connection Failed")
-        print(e)
+        print(" Database Connection Failed")
+        
 
 login_manager = LoginManager()
 login_manager.init_app(app)

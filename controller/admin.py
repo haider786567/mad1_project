@@ -217,3 +217,59 @@ def bookings():
     """View all bookings."""
     all_bookings = Booking.query.order_by(Booking.booking_date.desc()).all()
     return render_template('admin/booking.html', bookings=all_bookings)
+
+# ---------------------------------------------------------------------------
+# Search Functionality
+# ---------------------------------------------------------------------------
+
+@admin_bp.route('/search')
+@admin_required
+def search():
+    """Search treks, staff, or users by name or ID."""
+    query = request.args.get('q', '').strip()
+    category = request.args.get('category', 'all')
+
+    treks = []
+    staff_members = []
+    users = []
+
+    if query:
+        # Search by ID (if numeric)
+        is_numeric = query.isdigit()
+
+        if category in ('all', 'treks'):
+            trek_q = Trek.query
+            if is_numeric:
+                trek_q = trek_q.filter(
+                    (Trek.id == int(query)) | Trek.trek_name.ilike(f'%{query}%') | Trek.location.ilike(f'%{query}%')
+                )
+            else:
+                trek_q = trek_q.filter(Trek.trek_name.ilike(f'%{query}%') | Trek.location.ilike(f'%{query}%'))
+            treks = trek_q.all()
+
+        if category in ('all', 'staff'):
+            staff_q = User.query.filter_by(role='staff')
+            if is_numeric:
+                staff_q = staff_q.filter(
+                    (User.id == int(query)) | User.name.ilike(f'%{query}%') | User.email.ilike(f'%{query}%')
+                )
+            else:
+                staff_q = staff_q.filter(User.name.ilike(f'%{query}%') | User.email.ilike(f'%{query}%'))
+            staff_members = staff_q.all()
+
+        if category in ('all', 'users'):
+            user_q = User.query.filter_by(role='user')
+            if is_numeric:
+                user_q = user_q.filter(
+                    (User.id == int(query)) | User.name.ilike(f'%{query}%') | User.email.ilike(f'%{query}%')
+                )
+            else:
+                user_q = user_q.filter(User.name.ilike(f'%{query}%') | User.email.ilike(f'%{query}%'))
+            users = user_q.all()
+
+    return render_template('admin/search.html',
+                           query=query,
+                           category=category,
+                           treks=treks,
+                           staff_members=staff_members,
+                           users=users)
